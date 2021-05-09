@@ -222,3 +222,41 @@ def get_all_linked_ids(token):
     output = df.to_dict('records')
 
     return jsonify(output)
+
+'''
+    Task routes
+'''
+
+@discord.route('/discord/slayer/get_slayer_labels/<token>', methods=['GET'])
+def get_labels(token):
+
+    verified = tokens.verify_token(token=token, verifcation='discord_general')
+
+    if not (verified):
+        return jsonify({'Invalid Data':'Data'})
+    
+    data = SQL.get_label_names()
+
+    df = pd.DataFrame(data)
+    output = df.to_dict('records')
+
+    return jsonify(output)
+
+@discord.route('/discord/slayer/get_slayer_location/<token>/<label_name>', methods=['GET'])
+def get_slayer_locations(token, label_name):
+
+    verified = tokens.verify_token(token=token, verifcation='discord_general')
+
+    if not (verified):
+        return jsonify({'Invalid Data':'Data'})
+    
+    data = SQL.get_botlabel_locations(label_name)
+
+    df = pd.DataFrame(data)
+    output = df.to_dict('records')
+
+    return jsonify(output)
+
+
+    
+

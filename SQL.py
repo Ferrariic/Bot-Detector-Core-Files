@@ -5,6 +5,7 @@ import random
 import string
 from sqlalchemy import text
 from collections import namedtuple
+import pandas as pd
 
 '''
     Functions for SQL Queries
@@ -682,5 +683,54 @@ def verificationInsert(discord_id, player_id, code, token):
 def get_prediction_player(player_id):
     sql = 'select * from Predictions where id = :id'
     param = {'id':player_id}
+    data = execute_sql(sql, param=param, debug=False, has_return=True)
+    return data
+
+
+'''
+    Task Commands
+'''
+
+def get_label_names():
+
+    sql = 'SELECT * FROM `Labels` WHERE `id` > 3'
+    data = execute_sql(sql, param=None, debug=False, has_return=True)
+
+    return data
+
+
+
+def get_slayer_profile(playerName):
+
+    data = get_verification_player_id(player_name=playerName)
+
+    df = pd.DataFrame(data)
+    output = df.to_dict('records')
+    player_id = output[0]['id']
+
+    param = {'player_id':player_id}
+    sql = 'SELECT * FROM `discord_slayer_task` WHERE `player_id` = :player_id'
+    player_id_data = execute_sql(sql, param=param, debug=True, has_return=True, db_name="discord")
+
+    return player_id_data
+
+
+def get_botlabel_locations(label_name):
+
+    sql = ("""
+            SELECT
+                rid.region_name
+            FROM Players as pl
+            JOIN Reports as rp on pl.id = rp.reportedID
+            JOIN Labels as l on l.id = pl.label_id
+            JOIN regionIDNames as rid on rid.region_ID = rp.region_id
+            WHERE 1=1
+                and l.label = :label_name
+            GROUP BY rp.region_ID
+            ORDER BY count(rid.region_name) DESC
+            """)
+    param = {
+        'label_name': label_name
+    }
     data = execute_sql(sql, param=param, debug=False, has_return=True)
     return data

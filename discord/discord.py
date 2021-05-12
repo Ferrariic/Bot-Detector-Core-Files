@@ -257,6 +257,24 @@ def get_slayer_locations(token, label_name):
 
     return jsonify(output)
 
+@discord.route('/discord/slayer/get-current-slayer-task/<token>/<playerName>', methods=['GET'])
+def get_current_slayer_task(token, playerName):
+
+    verified = tokens.verify_token(token=token, verifcation='discord_general')
+
+    if not (verified):
+        return jsonify({'Invalid Data':'Data'})
+    
+    data = SQL.get_slayer_profile(playerName)
+
+    df = pd.DataFrame(data)
+    output = df.to_dict('records')
+
+    return jsonify(output)
+
+
+
+
 
     
 

@@ -688,7 +688,7 @@ def get_prediction_player(player_id):
 
 
 '''
-    Task Commands
+    Slayer task Commands
 '''
 
 def get_label_names():
@@ -734,3 +734,4 @@ def get_botlabel_locations(label_name):
     }
     data = execute_sql(sql, param=param, debug=False, has_return=True)
     return data
+

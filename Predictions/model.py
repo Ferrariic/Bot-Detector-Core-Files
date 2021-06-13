@@ -217,8 +217,9 @@ def predict_model(player_name=None, start=0, amount=100_000, use_pca=True, debug
         player = SQL.get_player(player_name)
 
         if player is None or debug:
-            df = highscores.scrape_one(player_name)
+            _ = highscores.scrape_one(player_name)
             player = SQL.get_player(player_name)
+            df =  SQL.get_highscores_data(0, 1, player.name)
             old_prediction = True
             Config.debug('hiscores')
         else:
@@ -323,7 +324,7 @@ def insert_prepared_data(df, columns):
     # insert many
     row = data[0]
     values = SQL.list_to_string([f':{column}' for column in list(row.keys())])
-    sql_insert = f'insert ignore into Predictions values ({values});'
+    sql_insert = f'replace into Predictions values ({values});'
     SQL.execute_sql(sql_insert, param=data, debug=False, has_return=False)
     return length
 
@@ -383,12 +384,22 @@ if __name__ == '__main__':
     n_pca = 2
     
     players = [
-        'memahao',
-        'extreme4all',
-        'ferrariic'
+        'NagatoRyoma',
+        'Alex3976',
+        'Hosuke79999',
+        'AsukaYuri',
+        'EchizenLee',
+        'Feastyakorb',
+        '5 Fort Open',
+        'PegasusFuma',
+        'Cross55612',
+        'Hyuga42096',
+        'Kira58769',
+        'AsheIvern',
+        'MitsukiRock'
     ]
     
-    # train_model(use_pca=use_pca, n_pca=n_pca)
+    train_model(use_pca=use_pca, n_pca=n_pca)
     # save_model(use_pca=use_pca, n_pca=n_pca)
 
     for player in players:

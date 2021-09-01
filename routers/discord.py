@@ -6,21 +6,17 @@ from database.functions import execute_sql, list_to_string, verify_token
 from fastapi import APIRouter, status
 from pydantic import BaseModel
 
-class Player(BaseModel):
-    name: str
-
 
 router = APIRouter()
 
 
 #!sweg/!equip
-@router.post("/v1/last_sighting/{token}", status_code=status.HTTP_200_OK, tags=["discord"])
-async def get_last_equipment(token: str, player: Player):
+# /last_sighting/?token={token}&player_name={player_name}
+@router.post("/v1/last_sighting/", status_code=status.HTTP_200_OK, tags=["discord"])
+async def get_last_equipment(token: str, player_name: str):
     
     if not await verify_token(token=token, verifcation="hiscore"):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Insufficient rights")
-
-    player_name = player.name
 
     sql = '''
             SELECT *
@@ -37,13 +33,11 @@ async def get_last_equipment(token: str, player: Player):
     
 
 #!gainz/!xpgains
-@router.post("/v1/xp_gains/{token}", status_code=status.HTTP_200_OK, tags=["discord"])
-async def get_xp_gains(token: str, player: Player):
+@router.post("/v1/xp_gains/", status_code=status.HTTP_200_OK, tags=["discord"])
+async def get_xp_gains(token: str, player_name: str):
 
     if not await verify_token(token=token, verifcation="hiscore"):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Insufficient rights")
-
-    player_name = player.name
 
     sql = '''          
             SELECT * 

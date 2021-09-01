@@ -1,7 +1,8 @@
 from Config import app
-from routers import feedback, hiscore, legacy, player, prediction, report
+from routers import discord, feedback, hiscore, legacy, player, prediction, report
 
 app.include_router(hiscore.router)
+app.include_router(discord.router)
 app.include_router(player.router)
 app.include_router(prediction.router)
 app.include_router(feedback.router)
